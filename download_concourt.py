@@ -1,12 +1,12 @@
-import re
 import concurrent.futures
-from tqdm import tqdm
+import re
 
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 
-FILE_PATH = "NALUS_03-03-2025.csv"
+FILE_PATH = "NALUS.csv"
 
 
 def ecli_to_url(ecli):
