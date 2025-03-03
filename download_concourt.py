@@ -10,7 +10,13 @@ FILE_PATH = "NALUS_03-03-2025.csv"
 
 
 def ecli_to_url(ecli):
-    match = re.search(r"(\d+)\.US\.(\d+)\.(\d+)\.(\d+)", ecli)
+    match = re.search(r'(Pl\.US(?:-st)?|Pl\.US-st)\.(\d+)\.(\d+)\.(\d+)', ecli, re.IGNORECASE)
+    if match:
+        registry, case, year, suffix = match.groups()
+        registry_prefix = 'St' if 'st' in registry.lower() else 'Pl'
+        return f"https://nalus.usoud.cz:443/Search/GetText.aspx?sz={registry_prefix}-{case}-{year}_{suffix}"
+    
+    match = re.search(r"(\d+)\.US\.(\d+)\.(\d+)\.(\d+)", ecli, re.IGNORECASE)
     if match:
         registry, case, year, suffix = match.groups()
         return (
@@ -57,15 +63,11 @@ def read_df(file_path):
 if __name__ == "__main__":
     df = read_df(FILE_PATH).assign(url=lambda d: d.ECLI.apply(ecli_to_url))
 
-    # Prepare empty list for results
     results: list[None | str] = [None] * len(df)
 
-    # Use ThreadPoolExecutor for parallel downloading
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        # Start the download tasks and get future objects
         future_to_index = {executor.submit(download_text, url): i for i, url in enumerate(df.url)}
 
-        # Process results as they complete with a progress bar
         for future in tqdm(
             concurrent.futures.as_completed(future_to_index),
             total=len(future_to_index),
@@ -78,14 +80,14 @@ if __name__ == "__main__":
                 print(f"Error processing row {index}: {e}")
                 results[index] = None
 
-    # Assign results back to the dataframe
     df["text"] = results
 
     df.to_json(
         FILE_PATH.replace(".csv", ".json"),
         orient="records",
-        lines=True,
         force_ascii=False,
         indent=4,
     )
+    
+    print("Number of missinge texts:", int(df.text.isna().sum()))
     print("Done.")
