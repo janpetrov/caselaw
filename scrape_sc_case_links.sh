@@ -22,14 +22,14 @@ python scrape_sc_case_links.py \
 # C decisions from 1 Jan 2021 to 31 Dec 2022, 814 opinions
 python scrape_sc_case_links.py \
     --url 'https://rozhodnuti.nsoud.cz/judikatura/judikatura_ns.nsf/$$WebSearch1?SearchView&Query=%5Bdatum_predani_na_web%5D%3E%3D01%2F01%2F2021%20AND%20%5Bdatum_predani_na_web%5D%3C%3D31%2F12%2F2022%20AND%20(%5BARozhodnutiRT%5D%3D((%22o.%20z.%22%20OR%20%22občansk*%20zákon*%22%20OR%20%2289%2F2012%22)))%20AND%20(%5Bkolegium%5D%3D1%20OR%20%5Bobko%5D%3D1)%20AND%20(%5Bkategorie_rozhodnuti1%5D%3DC)&SearchMax=1000&SearchOrder=4&Start=0&Count=60&pohled=1' \
-    --output-file-name B_2021_2022.json
+    --output-file-name C_2021_2022.json
 
 # C decisions from 1 Jan 2023 to 31 Dec 2024, 869 opinions
 python scrape_sc_case_links.py \
     --url 'https://rozhodnuti.nsoud.cz/judikatura/judikatura_ns.nsf/$$WebSearch1?SearchView&Query=%5Bdatum_predani_na_web%5D%3E%3D01%2F01%2F2023%20AND%20%5Bdatum_predani_na_web%5D%3C%3D31%2F12%2F2024%20AND%20(%5BARozhodnutiRT%5D%3D((%22o.%20z.%22%20OR%20%22občansk*%20zákon*%22%20OR%20%2289%2F2012%22)))%20AND%20(%5Bkolegium%5D%3D1%20OR%20%5Bobko%5D%3D1)%20AND%20(%5Bkategorie_rozhodnuti1%5D%3DC)&SearchMax=1000&SearchOrder=4&Start=0&Count=60&pohled=1' \
-    --output-file-name B_2023_2024.json
+    --output-file-name C_2023_2024.json
 
 # C decisions from 1 Jan 2025 to 28 Feb 2025, 83 opinions
 python scrape_sc_case_links.py \
     --url 'https://rozhodnuti.nsoud.cz/judikatura/judikatura_ns.nsf/$$WebSearch1?SearchView&Query=%5Bdatum_predani_na_web%5D%3E%3D01%2F01%2F2025%20AND%20%5Bdatum_predani_na_web%5D%3C%3D28%2F02%2F2025%20AND%20(%5BARozhodnutiRT%5D%3D((%22o.%20z.%22%20OR%20%22občansk*%20zákon*%22%20OR%20%2289%2F2012%22)))%20AND%20(%5Bkolegium%5D%3D1%20OR%20%5Bobko%5D%3D1)%20AND%20(%5Bkategorie_rozhodnuti1%5D%3DC)&SearchMax=1000&SearchOrder=4&Start=0&Count=60&pohled=1' \
-    --output-file-name B_2025_Feb.json
+    --output-file-name C_2025_Feb.json
