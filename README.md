@@ -11,10 +11,10 @@
 
 2. Click "Export" and save the exported .csv file as `NALUS.csv` in this directory.
 
-3. Run `download_concourt.py`.
+3. Run `python download_concourt.py`.
 
 ### Supreme Court Opinions
 
 1. Download links by running `scrape_sc_case_links.sh`.
 
-2. ... to be completed
+2. Gather the `sc_opinions.json` file by running `python scrape_sc_opinions.py`.
