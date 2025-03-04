@@ -252,7 +252,7 @@ if __name__ == "__main__":
     # Define paths
     base_dir = Path(__file__).parent
     links_dir = base_dir / "sc_case_links"
-    output_file = base_dir / "court_decisions.json"
+    output_file = base_dir / "sc_opinions.json"
     
     # Run the scraper with 20 worker threads
     scrape_all_court_decisions(str(links_dir), str(output_file), max_workers=20)
