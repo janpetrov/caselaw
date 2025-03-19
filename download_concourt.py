@@ -1,4 +1,5 @@
 import concurrent.futures
+from pathlib import Path
 import re
 
 import pandas as pd
@@ -6,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-FILE_PATH = "NALUS.csv"
+FILE_PATH = Path("data") / "NALUS.csv"
 
 
 def ecli_to_url(ecli):
@@ -83,7 +84,7 @@ if __name__ == "__main__":
     df["text"] = results
 
     df.to_json(
-        FILE_PATH.replace(".csv", ".json"),
+        FILE_PATH.with_suffix(".json"),
         orient="records",
         force_ascii=False,
         indent=4,

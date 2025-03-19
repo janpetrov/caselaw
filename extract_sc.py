@@ -4,6 +4,9 @@ from pathlib import Path
 import pandas as pd
 
 
+FILE_PATH = Path("data") / "sc_opinions.json"
+
+
 def read_df(path: Path):
     df = pd.read_json(path).assign(
         datum_rozhodnuti=lambda d: pd.to_datetime(d.datum_rozhodnuti, format="%d. %m. %Y"),
@@ -37,5 +40,5 @@ def read_df(path: Path):
 
 
 if __name__ == "__main__":
-    df = read_df(Path("sc_opinions.json"))
+    df = read_df(FILE_PATH)
     print(len(df))

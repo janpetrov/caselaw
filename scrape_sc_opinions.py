@@ -10,6 +10,11 @@ from dataclasses import dataclass, asdict
 from typing import Any, TypedDict
 
 
+BASE_DIR = Path(__file__).parent
+LINKS_DIR = BASE_DIR / "sc_case_links"
+OUTPUT_FILE = BASE_DIR / "data" / "sc_opinions.json"
+
+
 class CaseLink(TypedDict):
     """Type definition for a case link dictionary."""
     case_id: str
@@ -249,10 +254,4 @@ def scrape_all_court_decisions(links_directory: str, output_file: str, max_worke
 
 
 if __name__ == "__main__":
-    # Define paths
-    base_dir = Path(__file__).parent
-    links_dir = base_dir / "sc_case_links"
-    output_file = base_dir / "sc_opinions.json"
-    
-    # Run the scraper with 20 worker threads
-    scrape_all_court_decisions(str(links_dir), str(output_file), max_workers=20)
+    scrape_all_court_decisions(str(LINKS_DIR), str(OUTPUT_FILE), max_workers=20)
