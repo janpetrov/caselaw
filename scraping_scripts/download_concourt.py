@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-FILE_PATH = Path("data") / "NALUS.csv"
+FILE_PATH = Path(__file__).parent.parent / "data" / "NALUS.csv"
 
 
 def ecli_to_url(ecli):

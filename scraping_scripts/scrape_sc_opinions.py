@@ -10,7 +10,7 @@ from dataclasses import dataclass, asdict
 from typing import Any, TypedDict
 
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent.parent
 LINKS_DIR = BASE_DIR / "sc_case_links"
 OUTPUT_FILE = BASE_DIR / "data" / "sc_opinions.json"
 

@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 
-FILE_PATH = Path("data") / "sc_opinions.json"
+FILE_PATH = Path(__file__).parent.parent / "data" / "sc_opinions.json"
 
 
 def read_df(path: Path):
