@@ -1,0 +1,16 @@
+Extract all references to identifiers of legal acts from the provided court opinion and present them as a JSON list. Include each unique reference to legal act identifiers such as "§ 153a odst. 3 o. s. ř.", "§ 114b o. s. ř.", "§ 2959 zákona č. 89/2012 Sb.", "§ 17 odst. 1 o. z." etc. Only include exact references as they appear in the text.
+
+Example JSON output:
+
+[
+  "§ 153a odst. 3 o. s. ř.",
+  "§ 114b o. s. ř.",
+  "§ 2959 zákona č. 89/2012 Sb.",
+  "§ 17 odst. 1 o. z.",
+]
+
+Here is the court opinion to analyze:
+
+<court_opinion>
+{{ court_opinion }}
+</court_opinion>

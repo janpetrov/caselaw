@@ -1,0 +1,35 @@
+# Task: Extract Legal Act References from Court Opinions
+
+Extract all references to legal act identifiers from the provided court opinion and present them as a JSON list of unique entries. Follow these specific guidelines:
+
+## What to Extract:
+- All statutory references including section/paragraph symbols (§), article numbers, subsections (odst.), and legal code abbreviations (e.g., o. s. ř., o. z., tr. ř., tr. zák.)
+- Complete law citations with numbers (e.g., "zákon č. 89/2012 Sb.")
+- Constitutional provisions (e.g., "čl. 36 odst. 1 Listiny")
+- European legislation references (e.g., "čl. 3 směrnice 93/13/EHS")
+- International treaty references
+
+## Format Requirements:
+- Maintain the exact format and spacing as it appears in the original text
+- Include each unique reference only once in the output list
+- Present references in the order they first appear in the text
+- Return results as a properly formatted JSON array with each entry in quotes
+
+## What NOT to Extract:
+- References to court decisions or case law numbers
+- Explanatory text surrounding the legal references
+- Duplicates of already captured references
+
+## Example JSON Output (output just the list and nothing else, not even a comment or markdown backtick quote):
+[
+  "§ 153a odst. 3 o. s. ř.",
+  "§ 114b o. s. ř.",
+  "§ 2959 zákona č. 89/2012 Sb.",
+  "čl. 36 odst. 1 Listiny",
+  "§ 17 odst. 1 o. z."
+]
+
+## Input Court Opinion:
+<court_opinion>
+{{ court_opinion }}
+</court_opinion>
