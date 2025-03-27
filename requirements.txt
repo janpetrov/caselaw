@@ -1,0 +1,7 @@
+dotenv
+google-genai
+anthropic
+tqdm
+openai
+pandas
+jupyterlab
