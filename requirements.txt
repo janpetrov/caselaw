@@ -5,3 +5,4 @@ tqdm
 openai
 pandas
 jupyterlab
+pytest
