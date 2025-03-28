@@ -1,0 +1,18 @@
+[tool.ruff]
+
+line-length = 100  # or your preferred max line length
+target-version = "py312"  # since you're using Python 3.12
+# Enable additional rule categories:
+select = ["E", "F", "W", "B", "ANN"] 
+ignore = []  # (you can add rule codes here to ignore if needed)
+
+
+[tool.pytest.ini_options]
+# Specify the directory where tests are located
+testpaths = ["tests"]  # Use an array/list for paths
+
+# Add the project root to Python path for import resolution
+pythonpath = ["."]     # Use an array/list for paths
+
+# Add verbose output by default
+addopts = "-v"         # Keep as a string
