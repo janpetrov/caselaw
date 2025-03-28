@@ -10,6 +10,7 @@ def is_civil_code_reference(item: str) -> bool:
         r"(?:\(\s*)?89\s*/\s*2012(?:\s*\))?",           # 89/2012 with optional parentheses
         r"(?:\(\s*)?o\s*\.\s*z\s*\.(?:\s*\))?",         # o.z. with optional parentheses
         r"(?:\(\s*)?OZ(?:\s*\))?",                      # OZ with optional parentheses
+        r"(?:\(\s*)?NOZ(?:\s*\))?",                     # NOZ with optional parentheses
         r"(?:\(\s*)?občansk\w+\s+zákon\w*(?:\s*\))?"    # občanský zákoník with optional parentheses
     ]
 

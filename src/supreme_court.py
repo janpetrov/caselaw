@@ -37,5 +37,5 @@ def get_sc_data(path_or_str: Path | str) -> pd.DataFrame:
         ]
         numbers = [_make_int(_extract_number(s[1:].strip())) for s in filtered_items]
         out.append(numbers)
-        
+
     return df.assign(numbers=out)
