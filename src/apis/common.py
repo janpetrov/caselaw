@@ -1,7 +1,7 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-from typing import Callable, Iterable
+from typing import Callable, Collection
 
 import tqdm
 
@@ -15,7 +15,7 @@ def get_api_key(key: str | None, key_name: str | None) -> str:
 
 
 def run_inference_parallel(
-    texts: Iterable[str],
+    texts: Collection[str],
     infer_func: Callable[..., str | None],
     max_workers: int = 10,
     **infer_kwargs,
@@ -34,6 +34,6 @@ def run_inference_parallel(
     run_infer = partial(infer_func, **infer_kwargs)
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         thread_iterator = executor.map(run_infer, texts)
-        tqdm_iterator = tqdm(thread_iterator, total=len(texts))  # type: ignore
+        tqdm_iterator = tqdm.tqdm(thread_iterator, total=len(texts))
         results = list(tqdm_iterator)
     return results
