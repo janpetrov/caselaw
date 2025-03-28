@@ -3,7 +3,7 @@
 #   ("o. z." OR "občansk* zákon*" OR "89/2012")
 
 # Define scripts directory as a shared variable
-SCRIPTS_DIR="scraping_scripts"
+SCRIPTS_DIR="scripts"
 
 # A decisions from 1 Jul 2019 to 28 Feb 2025, 416 opinions
 python ${SCRIPTS_DIR}/scrape_sc_case_links.py \
