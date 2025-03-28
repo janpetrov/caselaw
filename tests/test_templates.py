@@ -1,4 +1,4 @@
-import pytest
+import pytest  # noqa: F401
 from src.templates import load_template, render_template, get_templates_dir, get_template_env
 
 
