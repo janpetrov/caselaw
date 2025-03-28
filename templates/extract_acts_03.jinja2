@@ -1,28 +1,60 @@
+I'll improve your prompt to make it more comprehensive, precise, and better structured for extracting Czech legal act references. Here's the enhanced version:
+
 # Task: Extract Legal Act References from Czech Court Opinions
 
-Extract all references to legal act identifiers from the provided court opinion and present them as a JSON list of unique entries. Follow these specific guidelines:
+Extract all references to legal act identifiers from the provided court opinion and present them as a JSON list of unique entries, maintaining the order of first appearance.
 
 ## What to Extract:
-- All statutory references including section/paragraph symbols (§), article numbers, subsections (odst.), and legal code abbreviations (e.g., o. s. ř., o. z., tr. ř., tr. zák.)
-- Extract the reference even if 
-  - it is more detailed (refers to "odstavec" or "odst.", "písmeno" or "písm." or "věta"); or
-  - it contains law abbreviation in brackets, e.g. (o. z.); or
-  - includes et al (e.g., "a násl." or "a další")
-- If two sections are referenced, e.g. "§ 17 a § 2000 odst. 1 o. z.", extract both references separately, e.g. "§ 17 o. z." and "§ 2000 odst. 1 o. z."
-- Complete law citations with numbers (e.g., "zákon č. 89/2012 Sb.")
-- Constitutional provisions (e.g., "čl. 36 odst. 1 Listiny")
-- European legislation references (e.g., "čl. 3 směrnice 93/13/EHS")
 
-## Format Requirements:
-- Present references in the order they first appear in the text
-- Return results as a properly formatted JSON array with each entry in quotes
+### Legal Code References
+- Section/paragraph symbols with associated numbers (e.g., `§ 153a`, `§ 114b`)
+- Article references including "čl." or "článek" (e.g., `čl. 36`)
+- All hierarchical components:
+  - Paragraphs/sections (odstavec/odst.) (e.g., `odst. 1`)
+  - Letters/points (písmeno/písm.) (e.g., `písm. a)`)
+  - Sentences (věta) (e.g., `věta první`)
+  - Items (bod) (e.g., `bod 3.`)
+
+### Legal Code Abbreviations
+- Civil Procedure Code (`o. s. ř.`, `OSŘ`)
+- Civil Code (`o. z.`, `obč. zák.`, `OZ`)
+- Criminal Code (`tr. zák.`, `TZ`)
+- Criminal Procedure Code (`tr. ř.`, `TŘ`)
+- Administrative Procedure Code (`s. ř. s.`, `SŘS`)
+- And other Czech legal code abbreviations
+
+### Full Law Citations
+- Complete law references with collection numbers (e.g., `zákon č. 89/2012 Sb.`)
+- Constitutional provisions (e.g., `čl. 36 odst. 1 Listiny`, `čl. 2 odst. 3 Ústavy`)
+- EU law references (e.g., `čl. 3 směrnice 93/13/EHS`, `nařízení Evropského parlamentu a Rady (EU) č. 1215/2012`)
+- International treaties (e.g., `čl. 6 odst. 1 Úmluvy`)
+
+### Special Cases
+- Extract consecutive references separately (e.g., `§ 17 a § 2000 odst. 1 o. z.` → `§ 17 o. z.` and `§ 2000 odst. 1 o. z.`)
+- Include references with act names in brackets (e.g., `§ 1885 (o. z.)`)
+- Include references with continuation markers (e.g., `§ 1991 a násl. o. z.`, `§ 2758 a další o. z.`)
+- Include references with appended quotations of provisions
+- Include references fully included in brackets, e.g. (§ 1555 o. z.) 
+
+## Key Processing Rules:
+1. Ensure references are complete with their legal code identifier when available
+2. Normalize spacing in references (single space between elements)
+3. Preserve the exact form of references as they appear in text
+4. Maintain original order of first appearance in the document
+5. Remove exact duplicates but keep variations (e.g., `§ 10` vs `§ 10 odst. 1`)
+6. Process both Czech and foreign legislation references
+7. Handle compound references with multiple sections or articles
 
 ## What NOT to Extract:
-- References to court decisions or case law numbers
-- Explanatory text surrounding the legal references
-- Duplicates of already captured references
+- Court decisions or case law numbers (e.g., `sp. zn. 21 Cdo 1467/2019`)
+- Judicial interpretations or explanatory text
+- Page numbers, document sections, or other non-legal references
+- References to legal literature, commentaries or legal doctrine
 
-## Example JSON Output (output just the list and nothing else, not even a comment or markdown backtick quote):
+## Output Format:
+Return a properly formatted JSON array with each unique legal reference as a string element, preserving the order of first appearance. Include no additional text, comments, or markdown formatting. The example output:
+
+```json
 [
   "§ 153a odst. 3 o. s. ř.",
   "§ 114b o. s. ř.",
@@ -33,6 +65,7 @@ Extract all references to legal act identifiers from the provided court opinion 
   "§ 3028 odst. 3 věta první o.z.",
   "§ 1885 (o. z.)"
 ]
+```
 
 ## Input Court Opinion:
 <court_opinion>
