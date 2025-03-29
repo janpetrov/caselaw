@@ -1,12 +1,25 @@
-import os
+from functools import partial
+
 from google import genai
 from google.genai import types
 
+from src.apis.common import get_api_key
 
-def gemini_infer(text, top_k=40, top_p=0.95, temperature=1):
-    client = genai.Client(
-        api_key=os.environ.get("GEMINI_API_KEY"),
-    )
+from ..constants import DEFAULT_MAX_TOKENS, GOOGLE_API_KEY
+
+get_google_api_key = partial(get_api_key, key_name=GOOGLE_API_KEY)
+
+
+def gemini_infer(
+    text: str,
+    *,
+    top_k: int = 40,
+    top_p: float = 0.95,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
+    temperature: float = 1.0,
+    api_key: str | None = None,
+):
+    client = genai.Client(api_key=get_google_api_key(api_key))
 
     model = "gemini-2.0-flash"
     contents = [
@@ -21,7 +34,7 @@ def gemini_infer(text, top_k=40, top_p=0.95, temperature=1):
         temperature=temperature,
         top_p=top_p,
         top_k=top_k,
-        max_output_tokens=8192,
+        max_output_tokens=max_tokens,
         response_mime_type="text/plain",
     )
 
