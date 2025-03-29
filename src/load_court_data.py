@@ -18,15 +18,15 @@ def _make_int(s) -> int | None:
         return None
 
 
-def get_sc_data(path_or_str: Path | str) -> pd.DataFrame:
+def load_sc_data(path_or_str: Path | str) -> pd.DataFrame:
     """Load data from a JSON file or string."""
 
     df = (
         pd.read_json(path_or_str)
         .assign(
-            datum_rozhodnuti=lambda d: pd.to_datetime(d.datum_rozhodnuti, format="%d. %m. %Y"),
-            zverejneno_na_webu=lambda d: pd.to_datetime(d.zverejneno_na_webu, format="%d. %m. %Y"),
-            spisova_znacka=lambda d: d.spisova_znacka.mask(d.spisova_znacka == "", d.id)
+            decision_date=lambda d: pd.to_datetime(d.datum_rozhodnuti, format="%d. %m. %Y"),
+            publication_date=lambda d: pd.to_datetime(d.zverejneno_na_webu, format="%d. %m. %Y"),
+            sp_zn=lambda d: d.spisova_znacka.mask(d.spisova_znacka == "", d.id)
         )
     )
 
@@ -36,7 +36,8 @@ def get_sc_data(path_or_str: Path | str) -> pd.DataFrame:
         filtered_items = [
             i for i in items if "89/2012" in i or "o.z." in i.lower() or "o. z." in i.lower()
         ]
-        numbers = [_make_int(_extract_number(s[1:].strip())) for s in filtered_items]
-        out.append(numbers)
+        sections = [_make_int(_extract_number(s[1:].strip())) for s in filtered_items]
+        out.append(sections)
 
-    return df.assign(numbers=out)
+    # Rename the variable to be more descriptive
+    return df.assign(sections_annotated=out)
