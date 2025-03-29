@@ -1,14 +1,14 @@
-import re
 import json
 import os
-import requests
+import re
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from bs4 import BeautifulSoup
-from dataclasses import dataclass, asdict
 from typing import Any, TypedDict
 
+import requests
+from bs4 import BeautifulSoup
 
 BASE_DIR = Path(__file__).parent.parent
 LINKS_DIR = BASE_DIR / "sc_case_links"
@@ -147,10 +147,10 @@ def load_case_links_from_directory(directory_path: str) -> list[CaseLink]:
     Returns a list of dictionaries with case information, extended with source_file.
     """
     all_cases: list[CaseLink] = []
-    
+
     # Get all JSON files in the directory
     json_files = [f for f in os.listdir(directory_path) if f.endswith('.json')]
-    
+
     for file_name in json_files:
         file_path = os.path.join(directory_path, file_name)
         try:
@@ -162,7 +162,7 @@ def load_case_links_from_directory(directory_path: str) -> list[CaseLink]:
                 all_cases.extend(cases)
         except Exception as e:
             print(f"Error loading file {file_path}: {e}")
-    
+
     return all_cases
 
 
@@ -179,29 +179,29 @@ def process_case(case: CaseLink) -> dict:
     permanent_link = case.get('permanent_link', '')
     source_file = case.get('source_file', '')
     case_id = case.get('case_id', '')
-    
+
     try:
         with print_lock:
             print(f"Processing: {case_id} from {source_file}")
-        
+
         response = requests.get(permanent_link, timeout=30)
         response.raise_for_status()
-        
+
         decision_data = scrape_court_decision(
             response.text,
             permanent_link=permanent_link,
             source_file=source_file
         )
-        
+
         with print_lock:
             print(f"Successfully processed: {case_id}")
-        
+
         return decision_data
-    
+
     except Exception as e:
         with print_lock:
             print(f"Error processing {case_id} from {source_file}: {e}")
-        
+
         # Return a minimal record for failed cases
         return {
             'id': '',
@@ -215,7 +215,7 @@ def process_case(case: CaseLink) -> dict:
 def scrape_all_court_decisions(links_directory: str, output_file: str, max_workers: int = 10):
     """
     Scrape all court decisions from links in the specified directory and save to a single JSON file.
-    
+
     Args:
         links_directory: Directory containing JSON files with case links
         output_file: Path to save the combined results
@@ -224,15 +224,15 @@ def scrape_all_court_decisions(links_directory: str, output_file: str, max_worke
     # Load all case links
     all_cases = load_case_links_from_directory(links_directory)
     print(f"Found {len(all_cases)} cases to process")
-    
+
     # Store all results
     all_decisions = []
-    
+
     # Process cases with thread pool
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         # Submit all cases to the executor
         future_to_case = {executor.submit(process_case, case): case for case in all_cases}
-        
+
         # Process results as they complete
         for future in future_to_case:
             try:
@@ -242,14 +242,14 @@ def scrape_all_court_decisions(links_directory: str, output_file: str, max_worke
             except Exception as e:
                 case = future_to_case[future]
                 print(f"Exception processing case {case.get('case_id', '')}: {e}")
-    
+
     # Save all results to a single JSON file
     output_path = Path(output_file)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(all_decisions, f, ensure_ascii=False, indent=2)
-    
+
     print(f"Saved {len(all_decisions)} court decisions to {output_file}")
 
 

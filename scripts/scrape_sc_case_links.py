@@ -124,7 +124,7 @@ def parse_arguments():
 
 if __name__ == "__main__":
     SUBDIR.mkdir(exist_ok=True, parents=True)
-    
+
     args = parse_arguments()
     results = scrape_opinions(start_url=args.url, base_url=BASE_URL, sleep_time=args.rate_limit)
     save_results_to_json(results, filepath=SUBDIR / args.output_file_name)

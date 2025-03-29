@@ -1,6 +1,6 @@
 import concurrent.futures
-from pathlib import Path
 import re
+from pathlib import Path
 
 import pandas as pd
 import requests
@@ -16,7 +16,7 @@ def ecli_to_url(ecli):
         registry, case, year, suffix = match.groups()
         registry_prefix = 'St' if 'st' in registry.lower() else 'Pl'
         return f"https://nalus.usoud.cz:443/Search/GetText.aspx?sz={registry_prefix}-{case}-{year}_{suffix}"
-    
+
     match = re.search(r"(\d+)\.US\.(\d+)\.(\d+)\.(\d+)", ecli, re.IGNORECASE)
     if match:
         registry, case, year, suffix = match.groups()
@@ -89,6 +89,6 @@ if __name__ == "__main__":
         force_ascii=False,
         indent=4,
     )
-    
+
     print("Number of missinge texts:", int(df.text.isna().sum()))
     print("Done.")
