@@ -100,7 +100,7 @@ def _extract_id_from_url(url: str) -> str:
     return splits[1]
 
 
-def headings_and_texts_from_rtf_files(urls: Iterable[str]) -> tuple[list[str], list[str]]:
+def headnotes_and_texts_from_rtf_files(urls: Iterable[str]) -> tuple[list[str], list[str]]:
     ids = [_extract_id_from_url(url) for url in urls]
     paths = [(RTF_DIR_PATH / doc_id).with_suffix(".rtf") for doc_id in ids]
     for path in paths:
@@ -109,7 +109,7 @@ def headings_and_texts_from_rtf_files(urls: Iterable[str]) -> tuple[list[str], l
 
     full_decisions = [read_rtf_file(path) for path in paths]
 
-    headings, texts = [], []
+    headnotes, texts = [], []
     for i, text in enumerate(full_decisions):
         if text.count("PRÁVNÍ VĚTY") != 1:
             raise ValueError(f"Text at index {i} does not contain 'PRÁVNÍ VĚTY' exactly once")
@@ -120,10 +120,10 @@ def headings_and_texts_from_rtf_files(urls: Iterable[str]) -> tuple[list[str], l
         if len(parts) != 2:
             raise ValueError(f"Text at index {i} does not contain 'Česká republika' exactly once")
 
-        headings.append(parts[0].strip())
+        headnotes.append(parts[0].strip())
         texts.append(parts[1].strip())
 
-    return headings, texts
+    return headnotes, texts
 
 
 if __name__ == "__main__":
@@ -141,8 +141,8 @@ if __name__ == "__main__":
         results = download_texts_parallel(df.url.tolist())
         df["text"] = results
     else:
-        headings, texts = headings_and_texts_from_rtf_files(df.url.tolist())
-        df["pravni_veta"] = headings
+        headnotes, texts = headnotes_and_texts_from_rtf_files(df.url.tolist())
+        df["pravni_veta"] = headnotes
         df["text"] = texts
 
     df.to_json(
