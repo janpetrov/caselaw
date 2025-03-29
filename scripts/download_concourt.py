@@ -1,20 +1,37 @@
+import argparse
 import concurrent.futures
 import re
 from pathlib import Path
+from typing import Collection, Iterable
 
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from striprtf.striprtf import rtf_to_text
 from tqdm import tqdm
 
 FILE_PATH = Path(__file__).parent.parent / "data" / "NALUS.csv"
+RTF_DIR_PATH = Path(__file__).parent.parent / "data" / "rtf"
+
+
+def read_df(file_path):
+    return pd.read_csv(
+        file_path,
+        encoding="cp1250",
+        delimiter=";",
+        quotechar='"',
+        escapechar="\\",
+        on_bad_lines="warn",
+        low_memory=False,
+        index_col=False,
+    )
 
 
 def ecli_to_url(ecli):
-    match = re.search(r'(Pl\.US(?:-st)?|Pl\.US-st)\.(\d+)\.(\d+)\.(\d+)', ecli, re.IGNORECASE)
+    match = re.search(r"(Pl\.US(?:-st)?|Pl\.US-st)\.(\d+)\.(\d+)\.(\d+)", ecli, re.IGNORECASE)
     if match:
         registry, case, year, suffix = match.groups()
-        registry_prefix = 'St' if 'st' in registry.lower() else 'Pl'
+        registry_prefix = "St" if "st" in registry.lower() else "Pl"
         return f"https://nalus.usoud.cz:443/Search/GetText.aspx?sz={registry_prefix}-{case}-{year}_{suffix}"
 
     match = re.search(r"(\d+)\.US\.(\d+)\.(\d+)\.(\d+)", ecli, re.IGNORECASE)
@@ -48,26 +65,11 @@ def download_text(url):
         return None
 
 
-def read_df(file_path):
-    return pd.read_csv(
-        file_path,
-        encoding="cp1250",
-        delimiter=";",
-        quotechar='"',
-        escapechar="\\",
-        on_bad_lines="warn",
-        low_memory=False,
-        index_col=False,
-    )
-
-
-if __name__ == "__main__":
-    df = read_df(FILE_PATH).assign(url=lambda d: d.ECLI.apply(ecli_to_url))
-
-    results: list[None | str] = [None] * len(df)
+def download_texts_parallel(urls: Collection[str]) -> list[None | str]:
+    results: list[None | str] = [None] * len(urls)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_index = {executor.submit(download_text, url): i for i, url in enumerate(df.url)}
+        future_to_index = {executor.submit(download_text, url): i for i, url in enumerate(urls)}
 
         for future in tqdm(
             concurrent.futures.as_completed(future_to_index),
@@ -81,7 +83,67 @@ if __name__ == "__main__":
                 print(f"Error processing row {index}: {e}")
                 results[index] = None
 
-    df["text"] = results
+    return results
+
+
+def read_rtf_file(file_path):
+    with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
+        rtf_text = file.read()
+        plain_text = rtf_to_text(rtf_text)
+        return plain_text
+
+
+def _extract_id_from_url(url: str) -> str:
+    splits = url.split("aspx?sz=")
+    if len(splits) != 2:
+        raise ValueError(f"URL does not contain 'aspx?sz=' or contains it multiple times: {url}")
+    return splits[1]
+
+
+def headings_and_texts_from_rtf_files(urls: Iterable[str]) -> tuple[list[str], list[str]]:
+    ids = [_extract_id_from_url(url) for url in urls]
+    paths = [(RTF_DIR_PATH / doc_id).with_suffix(".rtf") for doc_id in ids]
+    for path in paths:
+        if not path.exists():
+            raise FileNotFoundError(f"RTF file not found: {path}")
+
+    full_decisions = [read_rtf_file(path) for path in paths]
+
+    headings, texts = [], []
+    for i, text in enumerate(full_decisions):
+        if text.count("PRÁVNÍ VĚTY") != 1:
+            raise ValueError(f"Text at index {i} does not contain 'PRÁVNÍ VĚTY' exactly once")
+
+        content = text.split("PRÁVNÍ VĚTY")[1].strip()
+
+        parts = content.split("Česká republika", 1)
+        if len(parts) != 2:
+            raise ValueError(f"Text at index {i} does not contain 'Česká republika' exactly once")
+
+        headings.append(parts[0].strip())
+        texts.append(parts[1].strip())
+
+    return headings, texts
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Download or read constitutional court decisions.")
+    parser.add_argument(
+        "--download",
+        action="store_true",
+        help="Download texts from URLs instead of reading from RTF files",
+    )
+    args = parser.parse_args()
+
+    df = read_df(FILE_PATH).assign(url=lambda d: d.ECLI.apply(ecli_to_url))
+
+    if args.download:
+        results = download_texts_parallel(df.url.tolist())
+        df["text"] = results
+    else:
+        headings, texts = headings_and_texts_from_rtf_files(df.url.tolist())
+        df["pravni_veta"] = headings
+        df["text"] = texts
 
     df.to_json(
         FILE_PATH.with_suffix(".json"),
