@@ -11,6 +11,6 @@
     "ruff.organizeImports": true,
     "ruff.fixAll": true,
     "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.defaultFormatter": "charliermarsh.ruff"
     }
 }
