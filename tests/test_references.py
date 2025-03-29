@@ -1,9 +1,10 @@
 import pytest
+
 from src.filter_references import (
-    is_civil_code_reference,
-    filter_civil_code_references,
     extract_section_number,
     extract_section_numbers,
+    filter_civil_code_references,
+    is_civil_code_reference,
     process_raw_results,
 )
 

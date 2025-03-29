@@ -1,5 +1,6 @@
 import pathlib
 from typing import Any
+
 import jinja2
 
 # Environment instance to be initialized once

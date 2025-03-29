@@ -1,5 +1,6 @@
 import pytest  # noqa: F401
-from src.templates import load_template, render_template, get_templates_dir, get_template_env
+
+from src.templates import get_template_env, get_templates_dir, load_template, render_template
 
 
 def test_get_templates_dir():
