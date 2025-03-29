@@ -3,11 +3,12 @@
 line-length = 100  # or your preferred max line length
 target-version = "py312"  # since you're using Python 3.12
 # Enable additional rule categories:
-select = ["E", "F", "W", "B"] 
+select = ["E", "F", "W", "B", "I"] 
 ignore = []  # (you can add rule codes here to ignore if needed)
 
 
 [tool.pytest.ini_options]
+
 # Specify the directory where tests are located
 testpaths = ["tests"]  # Use an array/list for paths
 

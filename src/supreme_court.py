@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
+
 def _extract_number(s: str) -> int | None:
     try:
         return re.match(r"^\d+", s).group()  # type: ignore
