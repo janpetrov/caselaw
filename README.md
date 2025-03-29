@@ -14,7 +14,7 @@
 3. Go through each page, click the selector for all cases and then press "stáhnout vybrané".
    Save all downloaded .rtf files to the `data/rtf` directory.
 
-4. Run `python scripts/download_concourt.py`.
+4. Run `python scripts/gather_concourt.py`.
 
 ### Supreme Court Opinions
 
